@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%" style="background:#090910; font-family:sans-serif;">
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="70" fill="#141422" stroke="#252538" />
+  <circle cx="50" cy="35" r="18" fill="#8b5cf6" />
+  <text x="80" y="42" fill="#ffffff" font-size="20" font-weight="bold">SoundSphere</text>
+  
+  <text x="700" y="42" fill="#94a3b8" font-size="16">Home</text>
+  <text x="780" y="42" fill="#94a3b8" font-size="16">Discover</text>
+  <text x="870" y="42" fill="#94a3b8" font-size="16">Dashboard</text>
+  <circle cx="1130" cy="35" r="16" fill="#ec4899" />
+
+  <!-- Hero Section -->
+  <rect x="50" y="110" width="600" height="240" rx="12" fill="#141422" stroke="#252538" />
+  <text x="80" y="160" fill="#8b5cf6" font-size="14" font-weight="bold">[HERO BADGE: NEXT-GEN AUDIO]</text>
+  <text x="80" y="200" fill="#ffffff" font-size="28" font-weight="bold">Immerse Yourself in Pure Sound</text>
+  <text x="80" y="240" fill="#94a3b8" font-size="15">Discover millions of ultra-HD tracks and curated playlists.</text>
+  
+  <rect x="80" y="270" width="150" height="42" rx="21" fill="#8b5cf6" />
+  <text x="115" y="296" fill="#ffffff" font-size="14" font-weight="bold">Start Listening</text>
+
+  <rect x="250" y="270" width="150" height="42" rx="21" fill="#252538" />
+  <text x="280" y="296" fill="#ffffff" font-size="14" font-weight="bold">Explore Discover</text>
+
+  <rect x="680" y="110" width="470" height="240" rx="12" fill="#1e1e32" stroke="#252538" />
+  <text x="850" y="230" fill="#64748b" font-size="18">[ HERO VISUAL / ALBUM BANNER ]</text>
+
+  <!-- Featured Music Section -->
+  <text x="50" y="400" fill="#ffffff" font-size="22" font-weight="bold">Featured Music</text>
+  <rect x="50" y="420" width="260" height="260" rx="12" fill="#141422" stroke="#252538" />
+  <rect x="65" y="435" width="230" height="150" rx="8" fill="#1e1e32" />
+  <text x="65" y="615" fill="#ffffff" font-size="16" font-weight="bold">Midnight Cyberspace</text>
+  <text x="65" y="635" fill="#94a3b8" font-size="14">Aetheria</text>
+
+  <rect x="330" y="420" width="260" height="260" rx="12" fill="#141422" stroke="#252538" />
+  <rect x="345" y="435" width="230" height="150" rx="8" fill="#1e1e32" />
+  <text x="345" y="615" fill="#ffffff" font-size="16" font-weight="bold">Golden Hour Symphony</text>
+  <text x="345" y="635" fill="#94a3b8" font-size="14">Solaria Groove</text>
+
+  <rect x="610" y="420" width="260" height="260" rx="12" fill="#141422" stroke="#252538" />
+  <rect x="625" y="435" width="230" height="150" rx="8" fill="#1e1e32" />
+  <text x="625" y="615" fill="#ffffff" font-size="16" font-weight="bold">Velvet Sunset</text>
+  <text x="625" y="635" fill="#94a3b8" font-size="14">Maya Lin</text>
+
+  <rect x="890" y="420" width="260" height="260" rx="12" fill="#141422" stroke="#252538" />
+  <rect x="905" y="435" width="230" height="150" rx="8" fill="#1e1e32" />
+  <text x="905" y="615" fill="#ffffff" font-size="16" font-weight="bold">Dancing in the Rain</text>
+  <text x="905" y="635" fill="#94a3b8" font-size="14">Chloe Bennett</text>
+
+  <!-- Persistent Player Footer -->
+  <rect x="0" y="710" width="1200" height="90" fill="#10101c" stroke="#252538" />
+  <circle cx="50" cy="755" r="22" fill="#8b5cf6" />
+  <text x="85" y="750" fill="#ffffff" font-size="15" font-weight="bold">Midnight Cyberspace</text>
+  <text x="85" y="768" fill="#94a3b8" font-size="13">Aetheria</text>
+  
+  <circle cx="600" cy="755" r="20" fill="#ffffff" />
+  <polygon points="597,748 607,755 597,762" fill="#000000" />
+  <rect x="450" y="780" width="300" height="4" rx="2" fill="#33334d" />
+  <rect x="450" y="780" width="120" height="4" rx="2" fill="#8b5cf6" />
+</svg>

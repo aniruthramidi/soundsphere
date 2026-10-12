@@ -133,11 +133,15 @@ SoundSphere/
 │   │   ├── dashboard_wireframe.svg
 │   │   ├── discover_wireframe.svg
 │   │   └── track_detail_wireframe.svg
-│   └── testing/
-│       └── USABILITY_TESTING.md
+│   ├── testing/
+│   │   └── USABILITY_TESTING.md
+│   ├── PROJECT_REPORT.md
+│   └── PROJECT_REPORT.pdf
 │
 ├── index.html
 ├── package.json
+├── PROJECT_REPORT.md
+├── PROJECT_REPORT.pdf
 ├── README.md
 └── .gitignore
 ```

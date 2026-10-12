@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Play, Sparkles, TrendingUp, Radio, Flame, ArrowRight, Music2 } from 'lucide-react';
 import * as musicService from '../services/musicService.js';
@@ -18,7 +18,7 @@ export default function HomePage({ onOpenPlaylistModal }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchHomeData = async () => {
+  const fetchHomeData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -35,11 +35,11 @@ export default function HomePage({ onOpenPlaylistModal }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchHomeData();
-  }, []);
+  }, [fetchHomeData]);
 
   const genres = [
     { name: 'Pop', color: 'linear-gradient(135deg, #27272a, #18181b)', count: '450+ Tracks' },

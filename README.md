@@ -136,12 +136,14 @@ SoundSphere/
 │   ├── testing/
 │   │   └── USABILITY_TESTING.md
 │   ├── PROJECT_REPORT.md
-│   └── PROJECT_REPORT.pdf
+│   ├── PROJECT_REPORT.pdf
+│   └── PROJECT_REPORT.docx
 │
 ├── index.html
 ├── package.json
 ├── PROJECT_REPORT.md
 ├── PROJECT_REPORT.pdf
+├── PROJECT_REPORT.docx
 ├── README.md
 └── .gitignore
 ```

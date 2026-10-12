@@ -105,12 +105,14 @@ SoundSphere/
 │   ├── wireframes/             # SVG Wireframe diagrams & WIREFRAMES.md
 │   ├── testing/                # USABILITY_TESTING.md (15 test cases)
 │   ├── PROJECT_REPORT.md       # Full Academic Project Report
-│   └── PROJECT_REPORT.pdf      # Compiled Academic Project Report PDF
+│   ├── PROJECT_REPORT.pdf      # Compiled Academic Project Report PDF
+│   └── PROJECT_REPORT.docx     # Compiled Word Document Academic Report (.docx)
 │
 ├── index.html                  # HTML5 accessible root document
 ├── package.json                # Project dependencies & npm scripts
 ├── PROJECT_REPORT.md           # Full Academic Project Report
 ├── PROJECT_REPORT.pdf          # Compiled Academic Project Report PDF
+├── PROJECT_REPORT.docx         # Compiled Word Document Academic Report (.docx)
 ├── README.md                   # Complete GitHub project documentation
 └── .gitignore                  # Git tracking exclusion rules
 ```

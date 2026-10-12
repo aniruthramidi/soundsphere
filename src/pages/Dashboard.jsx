@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  User,
   Music,
   Clock,
   Heart,
@@ -19,7 +17,6 @@ import PlaylistCard from '../components/PlaylistCard.jsx';
 import Loading from '../components/Loading.jsx';
 
 export default function Dashboard({ onOpenPlaylistModal }) {
-  const navigate = useNavigate();
   const {
     recentlyPlayed,
     likedTrackIds,

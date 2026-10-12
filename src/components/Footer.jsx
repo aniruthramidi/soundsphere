@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Headphones, Heart, Globe, Radio, Disc, Sparkles } from 'lucide-react';
 
+const currentYear = new Date().getFullYear();
+
 export default function Footer() {
   return (
     <footer
@@ -83,7 +85,7 @@ export default function Footer() {
             color: 'var(--text-subtle)',
           }}
         >
-          <span>© {new Date().getFullYear()} SoundSphere. College Front-End Development Project.</span>
+          <span>© {currentYear} SoundSphere. College Front-End Development Project.</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
             Crafted with <Heart size={14} fill="#ec4899" color="#ec4899" /> using React & Vite
           </span>

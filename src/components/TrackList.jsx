@@ -24,7 +24,7 @@ export default function TrackList({ tracks, onOpenPlaylistModal }) {
 
   return (
     <div className="track-list" role="list">
-      {tracks.map((track, idx) => {
+      {tracks.map((track) => {
         const isCurrentTrack = currentTrack?.id === track.id;
         const isCurrentPlaying = isCurrentTrack && isPlaying;
         const isLiked = likedTrackIds.includes(track.id);

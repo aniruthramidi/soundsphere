@@ -222,7 +222,7 @@ export const PlayerProvider = ({ children }) => {
       setUserPlaylists(updatedPlaylists);
       const targetPl = updatedPlaylists.find((p) => p.id === playlistId);
       showToast(`Added "${track.title}" to playlist "${targetPl?.title || 'Playlist'}" 🎵`);
-    } catch (err) {
+    } catch {
       showToast('Could not add to playlist');
     }
   };
@@ -234,7 +234,7 @@ export const PlayerProvider = ({ children }) => {
       const updated = await musicService.createPlaylist(title, description);
       setUserPlaylists(updated);
       showToast(`Created new playlist "${title}" ✨`);
-    } catch (err) {
+    } catch {
       showToast('Failed to create playlist');
     }
   };

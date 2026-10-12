@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Play,
   Pause,
@@ -30,11 +30,7 @@ export default function TrackDetail({ onOpenPlaylistModal }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchTrackData();
-  }, [id]);
-
-  const fetchTrackData = async () => {
+  const fetchTrackData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -49,7 +45,11 @@ export default function TrackDetail({ onOpenPlaylistModal }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchTrackData();
+  }, [fetchTrackData]);
 
   if (loading) {
     return (

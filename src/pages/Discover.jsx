@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Compass, Sparkles, Filter, Grid, List as ListIcon, History } from 'lucide-react';
+import { Compass, Sparkles, Grid, List as ListIcon, History } from 'lucide-react';
 import * as musicService from '../services/musicService.js';
 import SearchBar from '../components/SearchBar.jsx';
 import GenreChip from '../components/GenreChip.jsx';
@@ -19,15 +19,11 @@ export default function Discover({ onOpenPlaylistModal }) {
   
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [recentSearches, setRecentSearches] = useState(['Synthwave', 'Aetheria', 'Pop', 'Acoustic']);
+  const recentSearches = ['Synthwave', 'Aetheria', 'Pop', 'Acoustic'];
 
   const genresList = ['All', 'Pop', 'Rock', 'Hip Hop', 'Electronic', 'Classical', 'Indie', 'Jazz'];
 
-  useEffect(() => {
-    fetchFilteredTracks();
-  }, [searchQuery, selectedGenre]);
-
-  const fetchFilteredTracks = async () => {
+  const fetchFilteredTracks = useCallback(async () => {
     setLoading(true);
     try {
       let results = await musicService.getTracks();
@@ -57,7 +53,11 @@ export default function Discover({ onOpenPlaylistModal }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, selectedGenre]);
+
+  useEffect(() => {
+    fetchFilteredTracks();
+  }, [fetchFilteredTracks]);
 
   const handleSearchChange = (val) => {
     setSearchQuery(val);

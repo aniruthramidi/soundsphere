@@ -8,9 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+server/node_modules
 dist
 dist-ssr
 *.local
+
+# SQLite Database binaries
+server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
 
 # Editor directories and files
 .vscode/*
@@ -25,6 +31,7 @@ dist-ssr
 
 # Environment
 .env
+server/.env
 .env.local
 .env.development.local
 .env.test.local

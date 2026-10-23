@@ -237,13 +237,42 @@ SoundSphere is engineered to adapt fluidly across all screen dimensions using CS
 
 ---
 
-## 14. Future Enhancements
+---
 
-- Real REST API / GraphQL backend integration (Node.js/Express or Firebase)
-- User Authentication (JWT / Firebase Auth sign-in)
-- Cloud music file upload & storage
-- Social sharing feed and friend listening activity
-- AI-powered personalized recommendation engine
+## 14. Backend RESTful API & Database Architecture
+
+SoundSphere now includes a full-featured, commercial-grade **RESTful API backend** built with **Node.js**, **Express**, **SQLite**, and **JWT Authentication**:
+
+- **Framework**: Express.js with modular routing, centralized error boundary, and request validation (`express-validator`).
+- **Database**: High-performance SQLite engine with enforced foreign key cascades, data types, and index optimizations.
+- **Authentication**: Stateless JSON Web Tokens (JWT) with bcrypt password hashing (10 salt rounds) and Role-Based Access Control (`listener`, `creator`, `admin`).
+- **Endpoints Catalog**:
+  - `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`, `PUT /api/v1/auth/profile`, `PUT /api/v1/auth/password`
+  - `GET /api/v1/tracks` (with search `q`, genre filter, pagination, sorting), `GET /api/v1/tracks/:id`, `POST /api/v1/tracks`, `PUT /api/v1/tracks/:id`, `DELETE /api/v1/tracks/:id`
+  - `POST /api/v1/tracks/:id/play` (playback count increment), `POST /api/v1/tracks/:id/like` (like toggle)
+  - `GET /api/v1/tracks/trending`, `GET /api/v1/tracks/genres`
+  - `GET /api/v1/playlists`, `POST /api/v1/playlists`, `GET /api/v1/playlists/:id`, `PUT /api/v1/playlists/:id`, `DELETE /api/v1/playlists/:id`
+  - `POST /api/v1/playlists/:id/tracks`, `DELETE /api/v1/playlists/:id/tracks/:trackId`
+  - `GET /api/v1/favorites`, `POST /api/v1/favorites/:trackId`, `DELETE /api/v1/favorites/:trackId`
+  - `GET /api/v1/analytics/dashboard`, `GET /api/v1/analytics/history`
+  - `GET /api/v1/health`
+- **Interactive Swagger Documentation**: Mounts at `http://localhost:5000/api/docs`.
+- **Automated Integration Testing**: 34 automated unit/integration tests running under 600ms via `node:test` and `supertest`.
+
+### Backend Quick Commands
+```bash
+# Run backend server:
+npm run server
+
+# Run backend development server (with auto-reload):
+npm run server:dev
+
+# Seed database:
+npm run server:seed
+
+# Run backend automated test suite:
+npm run server:test
+```
 
 ---
 
@@ -252,13 +281,11 @@ SoundSphere is engineered to adapt fluidly across all screen dimensions using CS
 This repository is structured for immediate upload to GitHub:
 
 ```bash
-git init
 git add .
-git commit -m "Initial SoundSphere project implementation"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPOSITORY_URL
-git push -u origin main
+git commit -m "feat(backend): implement RESTful APIs, SQLite database, JWT auth, and automated tests"
+git push origin main
 ```
+Repository URL: [https://github.com/aniruthramidi/SoundSphere](https://github.com/aniruthramidi/SoundSphere)
 
 ---
 
@@ -266,17 +293,12 @@ git push -u origin main
 
 | Requirement | Implementation Details | Status |
 | :--- | :--- | :--- |
-| **Front-end Web Application** | Built with React 18, Vite, JS ES6+, HTML5, CSS3 | **Satisfied** |
-| **Technology Stack** | React, Vite, JavaScript, CSS3, React Router, Lucide React (No TypeScript) | **Satisfied** |
-| **4 Interconnected Views** | Home (`/`), Dashboard (`/dashboard`), Discover (`/discover`), Track Detail (`/track/:id`) | **Satisfied** |
-| **React Router Navigation** | Client-side routing without full page reloads | **Satisfied** |
-| **Service Layer (`musicService.js`)** | Async functions (`getTracks`, `getTrackById`, `searchTracks`, `toggleLike`, etc.) returning Promises | **Satisfied** |
-| **Reusable Components** | `Navbar`, `MusicCard`, `TrackList`, `MusicPlayer`, `SearchBar`, `GenreChip`, `PlaylistCard`, `Loading`, `ErrorMessage`, `Footer`, `Toast`, `PlaylistModal` | **Satisfied** |
-| **Persistent Music Player** | HTML5 `<audio>` player at bottom with play/pause, prev/next, progress bar, time, volume, mute | **Satisfied** |
-| **Interactive Features** | Dynamic search, genre filter, like toggle, Web Share / copy link, add to playlist | **Satisfied** |
-| **Modern Dark Theme UI** | CSS custom variables (`:root`), glassmorphic design, smooth transitions, high-contrast text | **Satisfied** |
-| **Responsive Web Design** | Mobile drawer menu, dynamic card grids, media queries for desktop, tablet, mobile | **Satisfied** |
-| **Accessibility (a11y)** | Semantic tags, `aria-label`, visible focus states, keyboard nav, alt text | **Satisfied** |
-| **Wireframes (`docs/wireframes`)** | SVG wireframe diagrams & `WIREFRAMES.md` documentation for all 4 views | **Satisfied** |
-| **Usability Testing (`docs/testing`)** | `USABILITY_TESTING.md` with 15 test cases and pass/fail verification matrix | **Satisfied** |
-| **Code Quality & Best Practices** | Functional components, custom hooks, modular layout, clean folder structure | **Satisfied** |
+| **Front-end Web Application** | Built with React 19, Vite, JS ES6+, HTML5, CSS3 | **Satisfied** |
+| **Back-end RESTful APIs** | Built with Node.js, Express, SQLite, JWT, Helmet, CORS | **Satisfied** |
+| **CRUD Database Operations** | Full CRUD for Tracks, Playlists, Users, Favorites, and Playback History | **Satisfied** |
+| **Secure Authentication** | JWT tokens, bcrypt password hashing, auth middleware, RBAC | **Satisfied** |
+| **Input Validation & Error Handling** | `express-validator` rules, custom `AppError`, centralized error handling | **Satisfied** |
+| **Automated Testing** | 34 automated integration tests covering all endpoints via `node:test` and `supertest` | **Satisfied** |
+| **Interactive API Documentation** | OpenAPI 3.0 Swagger UI mounted at `/api/docs` and markdown specs | **Satisfied** |
+| **Deliverable Package** | ZIP archive containing source code, tests, docs, and Word report (.docx) | **Satisfied** |
+

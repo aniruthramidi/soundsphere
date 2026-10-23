@@ -1,0 +1,428 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SoundSphere Music Streaming REST API",
+    "version": "1.0.0",
+    "description": "Comprehensive RESTful backend API documentation for SoundSphere - a modern, commercial-grade music streaming web application. Features secure JWT authentication, relational SQLite database interaction, track catalog CRUD, playlist management, favorite liking system, audio streaming metadata, and user listening analytics.",
+    "contact": {
+      "name": "Ramidi Aniruth",
+      "email": "aniruthreddy1@gmail.com",
+      "url": "https://github.com/aniruthramidi/SoundSphere"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JSON Web Token (JWT) retrieved from /api/v1/auth/login or /api/v1/auth/register"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "username": { "type": "string", "example": "alex_vance" },
+          "email": { "type": "string", "example": "alex@soundsphere.io" },
+          "role": { "type": "string", "enum": ["listener", "creator", "admin"], "example": "listener" },
+          "avatar_url": { "type": "string", "example": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" },
+          "bio": { "type": "string", "example": "Passionate audiophile and electronic music curator." },
+          "created_at": { "type": "string", "format": "date-time", "example": "2026-10-01T12:00:00Z" }
+        }
+      },
+      "Track": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Midnight Cyberspace" },
+          "artist": { "type": "string", "example": "Aetheria" },
+          "album": { "type": "string", "example": "Neon Dreams" },
+          "genre": { "type": "string", "example": "Electronic" },
+          "duration": { "type": "integer", "description": "Duration in seconds", "example": 214 },
+          "artwork": { "type": "string", "example": "/artwork/midnight_cyberspace.jpg" },
+          "audio": { "type": "string", "example": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+          "description": { "type": "string", "example": "A pulsating synthwave track blending analog synths with futuristic sub-bass." },
+          "release_year": { "type": "integer", "example": 2024 },
+          "plays": { "type": "integer", "example": 1420500 },
+          "liked": { "type": "boolean", "example": true }
+        }
+      },
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "pl-1" },
+          "user_id": { "type": "integer", "example": 1 },
+          "title": { "type": "string", "example": "Chill Midnight Vibes" },
+          "description": { "type": "string", "example": "Late night atmospheric synths and mellow beats" },
+          "artwork": { "type": "string", "example": "/artwork/midnight_cyberspace.jpg" },
+          "is_public": { "type": "integer", "example": 1 },
+          "trackCount": { "type": "integer", "example": 6 },
+          "trackIds": { "type": "array", "items": { "type": "integer" }, "example": [1, 2, 5, 8, 9, 15] }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "status": { "type": "string", "example": "fail" },
+          "statusCode": { "type": "integer", "example": 400 },
+          "message": { "type": "string", "example": "Detailed description of error" },
+          "details": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Check API and Database Health",
+        "description": "Returns operational status, database response latency, and system memory metrics.",
+        "responses": {
+          "200": {
+            "description": "System is healthy",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "UP",
+                  "service": "SoundSphere REST API",
+                  "version": "1.0.0",
+                  "database": { "engine": "SQLite", "status": "healthy", "latencyMs": 0.45 },
+                  "uptimeSeconds": 128
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "email", "password"],
+                "properties": {
+                  "username": { "type": "string", "example": "alex_vance" },
+                  "email": { "type": "string", "example": "alex@soundsphere.io" },
+                  "password": { "type": "string", "example": "Password123!" },
+                  "role": { "type": "string", "enum": ["listener", "creator", "admin"], "default": "listener" },
+                  "bio": { "type": "string", "example": "Audiophile listener" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created successfully" },
+          "409": { "description": "Email or username already exists" },
+          "422": { "description": "Input validation failed" }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Authenticate user and receive JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "alex@soundsphere.io" },
+                  "password": { "type": "string", "example": "Password123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Authentication successful" },
+          "401": { "description": "Invalid email or password" }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get authenticated user profile",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Current user profile" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/tracks": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "List tracks with search, genre filter, and pagination",
+        "parameters": [
+          { "name": "q", "in": "query", "schema": { "type": "string" }, "description": "Search keyword matching title, artist, or album" },
+          { "name": "genre", "in": "query", "schema": { "type": "string" }, "description": "Filter by genre (e.g. Electronic, Pop, Jazz)" },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "default": "id" }, "description": "Field to sort by (plays, duration, release_year)" },
+          { "name": "order", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "asc" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 50 } }
+        ],
+        "responses": {
+          "200": { "description": "Paginated track list" }
+        }
+      },
+      "post": {
+        "tags": ["Tracks"],
+        "summary": "Create a new track",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "artist", "genre", "duration", "audio"],
+                "properties": {
+                  "title": { "type": "string", "example": "Neon Velocity" },
+                  "artist": { "type": "string", "example": "Aetheria" },
+                  "album": { "type": "string", "example": "Neon Dreams" },
+                  "genre": { "type": "string", "example": "Electronic" },
+                  "duration": { "type": "integer", "example": 195 },
+                  "audio": { "type": "string", "example": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+                  "artwork": { "type": "string", "example": "/artwork/midnight_cyberspace.jpg" },
+                  "description": { "type": "string", "example": "Upbeat synthwave rhythm" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Track created successfully" },
+          "401": { "description": "Unauthorized" },
+          "422": { "description": "Validation failed" }
+        }
+      }
+    },
+    "/api/v1/tracks/{id}": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Get track details by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Track details" },
+          "404": { "description": "Track not found" }
+        }
+      },
+      "put": {
+        "tags": ["Tracks"],
+        "summary": "Update track details",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Track updated successfully" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Track not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Tracks"],
+        "summary": "Delete a track",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Track deleted successfully" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/tracks/{id}/play": {
+      "post": {
+        "tags": ["Tracks"],
+        "summary": "Record track play event",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Play event logged and play count incremented" }
+        }
+      }
+    },
+    "/api/v1/tracks/{id}/like": {
+      "post": {
+        "tags": ["Tracks"],
+        "summary": "Toggle track like/favorite status",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Liked state toggled (liked: true/false)" }
+        }
+      }
+    },
+    "/api/v1/tracks/trending": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Get top trending tracks",
+        "parameters": [{ "name": "limit", "in": "query", "schema": { "type": "integer", "default": 5 } }],
+        "responses": {
+          "200": { "description": "Trending tracks list" }
+        }
+      }
+    },
+    "/api/v1/tracks/genres": {
+      "get": {
+        "tags": ["Tracks"],
+        "summary": "Get distinct genres with track counts",
+        "responses": {
+          "200": { "description": "List of genres and track counts" }
+        }
+      }
+    },
+    "/api/v1/playlists": {
+      "get": {
+        "tags": ["Playlists"],
+        "summary": "Get public and user playlists",
+        "responses": {
+          "200": { "description": "List of playlists" }
+        }
+      },
+      "post": {
+        "tags": ["Playlists"],
+        "summary": "Create a new playlist",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": { "type": "string", "example": "Coding Sessions" },
+                  "description": { "type": "string", "example": "Focus beats for programming" },
+                  "artwork": { "type": "string" },
+                  "is_public": { "type": "boolean", "default": true },
+                  "trackIds": { "type": "array", "items": { "type": "integer" }, "example": [1, 2, 8] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Playlist created successfully" }
+        }
+      }
+    },
+    "/api/v1/playlists/{id}": {
+      "get": {
+        "tags": ["Playlists"],
+        "summary": "Get playlist with full track list",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Playlist with populated track objects" },
+          "404": { "description": "Playlist not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Playlists"],
+        "summary": "Delete playlist",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Playlist deleted successfully" }
+        }
+      }
+    },
+    "/api/v1/playlists/{id}/tracks": {
+      "post": {
+        "tags": ["Playlists"],
+        "summary": "Add a track to playlist",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["track_id"],
+                "properties": {
+                  "track_id": { "type": "integer", "example": 4 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Track added to playlist" },
+          "409": { "description": "Track already in playlist" }
+        }
+      }
+    },
+    "/api/v1/playlists/{id}/tracks/{trackId}": {
+      "delete": {
+        "tags": ["Playlists"],
+        "summary": "Remove a track from playlist",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "trackId", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "Track removed from playlist" }
+        }
+      }
+    },
+    "/api/v1/favorites": {
+      "get": {
+        "tags": ["Favorites"],
+        "summary": "Get all favorited tracks for user",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "List of user liked tracks" }
+        }
+      }
+    },
+    "/api/v1/analytics/dashboard": {
+      "get": {
+        "tags": ["Analytics"],
+        "summary": "Get personalized listening analytics and dashboard metrics",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Dashboard statistics, recent tracks, and recommendations",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "stats": {
+                      "songsPlayed": 42,
+                      "hoursListened": 3.8,
+                      "favoriteGenre": "Electronic",
+                      "playlistsCreated": 2,
+                      "favoritesCount": 5
+                    },
+                    "recentlyPlayed": [],
+                    "recommendations": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

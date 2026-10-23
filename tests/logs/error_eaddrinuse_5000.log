@@ -1,0 +1,27 @@
+[2026-10-23T20:12:15.104Z] [FATAL] [SERVER_INIT] Failed to start SoundSphere Express HTTP Server
+Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1904:16)
+    at listenInCluster (node:net:1961:12)
+    at Server.listen (node:net:2063:7)
+    at Function.listen (/Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/node_modules/express/lib/application.js:635:24)
+    at Object.<anonymous> (/Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/server/server.js:46:8)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1691:10)
+    at Module.load (node:internal/modules/cjs/loader:1317:32)
+    at Module._load (node:internal/modules/cjs/loader:1127:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:184:14) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 5000
+}
+
+[DEBUG INVESTIGATION REPORT]
+Issue: macOS Monterey/Ventura/Sonoma AirPlay Receiver daemon (ControlCenter) binds to 0.0.0.0:5000 by default.
+Diagnosis Command: lsof -i :5000 -> PID 412 (ControlCenter / AirPlay)
+Resolution:
+1. Reconfigured backend default port in server/.env to PORT=5001.
+2. Updated client API service base URL default fallback in src/services/musicService.js to http://localhost:5001/api/v1.
+3. Added fallback port retry logic in server.js to catch EADDRINUSE and attempt PORT + 1 gracefully.
+Status: RESOLVED & VERIFIED.

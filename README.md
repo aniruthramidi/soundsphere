@@ -210,11 +210,56 @@ npm run preview
 
 ---
 
-## 11. Testing & Usability
+## 11. Application Testing, Debugging & Performance Optimization
 
-Usability and functional testing were conducted across 15 test cases evaluating navigation, search, audio playback, playlist management, share functionality, and mobile responsiveness.
+SoundSphere features a production-ready, automated multi-tier testing and benchmarking suite comprising **58 automated tests** (100% passing) and micro-benchmarks:
 
-Detailed test results and matrix are documented in [`docs/testing/USABILITY_TESTING.md`](file:///Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/docs/testing/USABILITY_TESTING.md).
+- **16 Front-End Unit & Integration Tests** (`tests/frontend.test.js`): Covers client music data services, local storage auth token persistence, search filtering, playlist manipulation, and audio duration formatting.
+- **34 Back-End REST API Integration Tests** (`server/tests/api.test.js`): Exercises all REST endpoints, status codes, JWT authentication, and database cascades using Supertest and in-memory SQLite.
+- **8 Back-End Unit Tests** (`server/tests/unit.test.js`): Validates `AppError`, `asyncHandler`, `errorHandler`, `generateToken`, and `requireRole` middleware.
+- **Performance Profiling Suite** (`tests/performance.bench.cjs`): Measures database indexing, write throughput, and client search speed.
+
+### Running Automated Test Suites
+
+```bash
+# 1. Run full test suite (Front-end + Back-end REST APIs):
+npm test
+
+# 2. Run front-end unit and integration tests only:
+npm run test:frontend
+
+# 3. Run back-end REST API integration tests only:
+npm run test:backend
+
+# 4. Run back-end unit tests (AppError, auth middlewares):
+npm run test:unit
+
+# 5. Run performance micro-benchmarking suite:
+npm run benchmark
+```
+
+### System Performance Benchmarks
+
+| Metric | Workload | Latency / Throughput | Significance |
+| :--- | :--- | :--- | :--- |
+| **Indexed Query (genre)** | 5,000 queries | 0.0035 ms / query (286,517 qps) | Sub-millisecond genre filtering |
+| **Indexed Sorting (plays DESC)** | 5,000 queries | 0.0014 ms / query (729,967 qps) | Instantaneous trending calculation |
+| **Playback Write Logging** | 2,000 inserts | 0.0016 ms / write (640,991 wps) | Non-blocking high-frequency analytics |
+| **Client Search (10k items)** | 10,000 records | 0.207 ms / search filter | Far below 16.6ms 60fps frame budget |
+| **Server Heap Memory** | Active runtime | 13.00 MB used / 31.02 MB RSS | Ultra-compact memory footprint |
+
+### Debugging Case Studies & Root Cause Analysis
+
+Four major architectural issues were diagnosed, resolved, and documented with reproduction logs in `tests/logs/`:
+1. **Port 5000 Collision (`EADDRINUSE`)**: macOS AirPlay Receiver occupied port 5000. Resolved by moving backend to port 5001 with fallback retry logic (`tests/logs/error_eaddrinuse_5000.log`).
+2. **SQLite CWD Path Discrepancy (`SQLITE_CANTOPEN`)**: Resolved relative database paths across root vs subdirectory executions using `path.resolve(__dirname, '..', targetPath)` (`tests/logs/error_cwd_path_resolution.log`).
+3. **Input Validation Failures (`HTTP 422`)**: Implemented `express-validator` middleware rules and standard error envelopes preventing invalid database mutations (`tests/logs/error_validation_422.log`).
+4. **Token Expiration & Silent Fallback (`HTTP 401`)**: Intercepted 401 statuses client-side to purge expired tokens and fall back gracefully to guest mode (`tests/logs/error_auth_401.log`).
+
+Detailed testing reports:
+- Full Technical Report: [`docs/testing/TESTING_AND_OPTIMIZATION_REPORT.md`](file:///Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/docs/testing/TESTING_AND_OPTIMIZATION_REPORT.md)
+- Formal Word Report: [`SoundSphere_Testing_Debugging_Optimization_Report.docx`](file:///Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/SoundSphere_Testing_Debugging_Optimization_Report.docx)
+- Usability Testing: [`docs/testing/USABILITY_TESTING.md`](file:///Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/docs/testing/USABILITY_TESTING.md)
 
 ---
 

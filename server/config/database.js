@@ -19,7 +19,18 @@ function initDatabase(customPath) {
     return dbInstance;
   }
 
-  const dbPath = customPath || process.env.DB_PATH || path.join(__dirname, '../data/soundsphere.db');
+  let dbPath;
+  if (customPath) {
+    dbPath = customPath;
+  } else if (process.env.DB_PATH) {
+    dbPath = process.env.DB_PATH === ':memory:'
+      ? ':memory:'
+      : path.isAbsolute(process.env.DB_PATH)
+        ? process.env.DB_PATH
+        : path.resolve(__dirname, '..', process.env.DB_PATH);
+  } else {
+    dbPath = path.join(__dirname, '../data/soundsphere.db');
+  }
 
   if (dbPath !== ':memory:') {
     const dir = path.dirname(dbPath);

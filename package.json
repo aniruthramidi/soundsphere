@@ -12,7 +12,11 @@
     "server:dev": "cd server && npm run dev",
     "server:seed": "cd server && npm run seed",
     "server:test": "cd server && npm test",
-    "test": "cd server && npm test"
+    "test": "node --test tests/frontend.test.js && cd server && npm test",
+    "test:frontend": "node --test tests/frontend.test.js",
+    "test:backend": "cd server && npm test",
+    "test:unit": "node --test server/tests/unit.test.js",
+    "benchmark": "node tests/performance.bench.cjs"
   },
   "dependencies": {
     "lucide-react": "^1.49.0",

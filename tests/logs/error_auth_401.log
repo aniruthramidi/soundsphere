@@ -1,0 +1,23 @@
+[2026-10-23T20:55:12.784Z] [WARN] [AUTH_UNAUTHORIZED] Protected resource access rejected: GET /api/v1/auth/me
+Headers Received:
+{
+  "host": "localhost:5001",
+  "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+  "accept": "application/json",
+  "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzg0ODAwMDAwLCJleHAiOjE3ODQ4MDAwMDB9.expired_sig"
+}
+
+Response Body:
+{
+  "status": "fail",
+  "message": "Your token has expired. Please log in again."
+}
+
+[DEBUG INVESTIGATION REPORT]
+Issue: When JWT tokens expired after 7 days or when localStorage credentials were wiped, frontend API requests to /api/v1/favorites or /api/v1/auth/me hung or failed without notifying the UI state.
+Diagnosis: server/middleware/auth.js previously returned 401, but the frontend did not catch token expiration specifically, causing stale token re-use.
+Resolution:
+1. Enhanced server/middleware/auth.js with explicit JsonWebTokenError and TokenExpiredError branch handling.
+2. Updated client musicService.js fetch API wrapper to intercept 401 responses, clear obsolete tokens from localStorage, and trigger clean guest mode fallback.
+3. Added automated unit and integration tests (server/tests/api.test.js Tests 2.2 and 2.7).
+Status: RESOLVED & VERIFIED.

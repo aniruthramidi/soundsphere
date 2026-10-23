@@ -1,0 +1,48 @@
+
+> soundsphere-backend@1.0.0 test
+> node --test tests/api.test.js
+
+🌱 Starting SoundSphere database seeding...
+✅ SoundSphere database seeded successfully!
+✔ 1.1 GET / - Should return API welcome metadata (239.944334ms)
+✔ 1.2 GET /api/v1/health - Should return operational status UP and DB latency (0.779375ms)
+✔ 1.3 GET /api/v1/unknown-route - Should return 404 AppError JSON (0.734542ms)
+✔ 2.1 POST /api/v1/auth/login - Should successfully log in Alex (50.832875ms)
+✔ 2.2 POST /api/v1/auth/login - Should reject invalid password with 401 (50.643583ms)
+✔ 2.3 POST /api/v1/auth/register - Should register a new user successfully (51.536625ms)
+✔ 2.4 POST /api/v1/auth/register - Should reject duplicate email with 409 Conflict (1.17725ms)
+✔ 2.5 POST /api/v1/auth/register - Should reject invalid inputs with 422 Unprocessable Entity (0.963417ms)
+✔ 2.6 GET /api/v1/auth/me - Should return current user with valid Bearer token (1.052834ms)
+✔ 2.7 GET /api/v1/auth/me - Should reject request with 401 when token is missing (0.535875ms)
+✔ 2.8 PUT /api/v1/auth/profile - Should update profile bio successfully (0.927084ms)
+✔ 3.1 GET /api/v1/tracks - Should return paginated track catalog (1.003041ms)
+✔ 3.2 GET /api/v1/tracks?q=cyberspace - Should filter tracks by search keyword (0.523541ms)
+✔ 3.3 GET /api/v1/tracks?genre=Classical - Should filter tracks by genre (0.478042ms)
+✔ 3.4 GET /api/v1/tracks/trending - Should return top trending tracks ordered by plays (0.4395ms)
+✔ 3.5 GET /api/v1/tracks/genres - Should return distinct genres and counts (0.389959ms)
+✔ 3.6 GET /api/v1/tracks/1 - Should return single track details (0.433291ms)
+✔ 3.7 GET /api/v1/tracks/9999 - Should return 404 for non-existent track ID (0.47075ms)
+✔ 3.8 POST /api/v1/tracks - Should create a new track (Authenticated) (0.906459ms)
+✔ 3.9 POST /api/v1/tracks/:id/play - Should increment track play count (0.728625ms)
+✔ 3.10 POST /api/v1/tracks/:id/like - Should toggle like status for user (0.889375ms)
+✔ 3.11 PUT /api/v1/tracks/:id - Should update track metadata (0.674959ms)
+✔ 3.12 DELETE /api/v1/tracks/:id - Should delete the track (0.886166ms)
+✔ 4.1 GET /api/v1/playlists - Should list public playlists (0.462667ms)
+✔ 4.2 POST /api/v1/playlists - Should create a new user playlist (0.693375ms)
+✔ 4.3 GET /api/v1/playlists/:id - Should get playlist with populated track list (0.526583ms)
+✔ 4.4 POST /api/v1/playlists/:id/tracks - Should add a track to playlist (0.577458ms)
+✔ 4.5 POST /api/v1/playlists/:id/tracks - Should reject duplicate track addition with 409 (0.486417ms)
+✔ 4.6 DELETE /api/v1/playlists/:id/tracks/:trackId - Should remove track from playlist (0.440125ms)
+✔ 4.7 DELETE /api/v1/playlists/:id - Should delete playlist successfully (0.398541ms)
+✔ 5.1 GET /api/v1/favorites - Should retrieve user favorite tracks (1.121542ms)
+✔ 5.2 GET /api/v1/favorites/check/:trackId - Should check if track is favorited (0.522167ms)
+✔ 6.1 GET /api/v1/analytics/dashboard - Should calculate listening metrics correctly (0.548208ms)
+✔ 6.2 GET /api/v1/analytics/history - Should return paginated listening logs (0.505667ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 527.762417

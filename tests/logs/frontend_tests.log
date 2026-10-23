@@ -1,0 +1,32 @@
+▶ 1. Front-End Music Data Service Unit Tests
+  ✔ 1.1 getTracks - Should return track catalog array (19.330875ms)
+  ✔ 1.2 getTrackById - Should return single track by ID (1.664459ms)
+  ✔ 1.3 getTrackById - Should reject with error for non-existent track ID (152.343291ms)
+  ✔ 1.4 searchTracks - Should filter tracks matching search keyword (2.605042ms)
+  ✔ 1.5 searchTracks - Should return full catalog when query is empty (151.376375ms)
+  ✔ 1.6 getTracksByGenre - Should filter tracks strictly by genre (2.344292ms)
+  ✔ 1.7 getFeaturedTracks - Should return top 6 tracks sorted by plays (2.035292ms)
+  ✔ 1.8 getTrendingTracks - Should return trending tracks list (2.140459ms)
+  ✔ 1.9 getRecentlyAdded - Should return latest releases (1.867666ms)
+✔ 1. Front-End Music Data Service Unit Tests (336.932625ms)
+▶ 2. Front-End State & Authentication Unit Tests
+  ✔ 2.1 saveAuthToken and getAuthToken - Should persist and retrieve token from localStorage (0.2675ms)
+  ✔ 2.2 checkHealth - Should return connection object with boolean status (2.671625ms)
+  ✔ 2.3 toggleLike - Should toggle track like state and update persistence (154.240333ms)
+✔ 2. Front-End State & Authentication Unit Tests (157.544958ms)
+▶ 3. Front-End Playlists & Library Unit Tests
+  ✔ 3.1 getUserPlaylists - Should return list of user playlists (2.79125ms)
+  ✔ 3.2 createPlaylist - Should create a new playlist and return updated array (154.235666ms)
+  ✔ 3.3 addTrackToPlaylist - Should add track to playlist without duplicates (155.9295ms)
+✔ 3. Front-End Playlists & Library Unit Tests (313.462708ms)
+▶ 4. Audio Utility & Formatting Helpers
+  ✔ 4.1 formatDuration - Should format seconds into mm:ss strings accurately (0.177ms)
+✔ 4. Audio Utility & Formatting Helpers (0.286125ms)
+ℹ tests 16
+ℹ suites 4
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 894.462667

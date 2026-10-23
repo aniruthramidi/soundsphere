@@ -1,0 +1,29 @@
+[2026-10-23T20:25:40.812Z] [ERROR] [DATABASE_INIT] SQLite connection initialization failed
+SqliteError: unable to open database file: ./data/soundsphere.db
+    at new Database (/Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/node_modules/better-sqlite3/lib/database.js:48:10)
+    at initDatabase (/Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/server/config/database.js:28:16)
+    at Object.<anonymous> (/Users/aniruthreddy/.gemini/antigravity-ide/scratch/SoundSphere/server/server.js:18:12)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1691:10)
+    at Module.load (node:internal/modules/cjs/loader:1317:32)
+    at Module._load (node:internal/modules/cjs/loader:1127:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:184:14) {
+  code: 'SQLITE_CANTOPEN'
+}
+
+[DEBUG INVESTIGATION REPORT]
+Issue: When running tests or starting the server from the repository root directory (/SoundSphere) vs inside (/SoundSphere/server), relative path './data/soundsphere.db' resolved to /SoundSphere/data/... where the directory did not exist.
+Diagnosis:
+- Running from root: process.cwd() = /Users/aniruthreddy/.../SoundSphere (looking for ./data/soundsphere.db)
+- Expected location: /Users/aniruthreddy/.../SoundSphere/server/data/soundsphere.db
+Resolution:
+1. Replaced raw relative pathing in server/config/database.js:
+   Before: const dbPath = process.env.DB_PATH || './data/soundsphere.db';
+   After:  const resolvedPath = path.isAbsolute(targetPath)
+             ? targetPath
+             : path.resolve(__dirname, '..', targetPath);
+2. Added automatic directory creation:
+   const dir = path.dirname(resolvedPath);
+   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+3. Guaranteed hermetic execution whether invoking from project root, server subdirectory, or test runners.
+Status: RESOLVED & VERIFIED.

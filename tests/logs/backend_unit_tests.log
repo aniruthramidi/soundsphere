@@ -1,0 +1,20 @@
+▶ 1. Error Handling & AppError Class Unit Tests
+  ✔ 1.1 AppError - Should initialize with status "fail" for 4xx errors (0.25775ms)
+  ✔ 1.2 AppError - Should initialize with status "error" for 5xx errors (0.044459ms)
+  ✔ 1.3 AppError - Should attach optional error details array (0.109958ms)
+  ✔ 1.4 asyncHandler - Should catch rejected promises and forward error to next() (0.072667ms)
+  ✔ 1.5 errorHandler - Should format standardized JSON response envelope (0.0645ms)
+✔ 1. Error Handling & AppError Class Unit Tests (0.929917ms)
+▶ 2. Authentication & Authorization Middleware Unit Tests
+  ✔ 2.1 generateToken - Should generate valid JWT carrying user payload (1.142875ms)
+  ✔ 2.2 requireRole - Should allow access if user has permitted role (0.061792ms)
+  ✔ 2.3 requireRole - Should reject with 403 Forbidden if user lacks permitted role (0.292416ms)
+✔ 2. Authentication & Authorization Middleware Unit Tests (1.583375ms)
+ℹ tests 8
+ℹ suites 2
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.107166

@@ -1,0 +1,39 @@
+[2026-10-23T20:41:05.319Z] [WARN] [VALIDATION_FAILURE] POST /api/v1/auth/register rejected with HTTP 422 Unprocessable Entity
+Request Payload:
+{
+  "email": "invalid-email-format",
+  "password": "123",
+  "name": ""
+}
+
+Response Body:
+{
+  "status": "fail",
+  "message": "Validation failed: 3 error(s) detected",
+  "errors": [
+    {
+      "field": "name",
+      "message": "Name is required and must be between 2 and 50 characters",
+      "value": ""
+    },
+    {
+      "field": "email",
+      "message": "Please provide a valid email address",
+      "value": "invalid-email-format"
+    },
+    {
+      "field": "password",
+      "message": "Password must be at least 6 characters long",
+      "value": "123"
+    }
+  ]
+}
+
+[DEBUG INVESTIGATION REPORT]
+Issue: Client-side forms previously allowed incomplete submissions if JavaScript client validation was bypassed or delayed, triggering unhandled 500 database constraint exceptions.
+Diagnosis: Database schema had NOT NULL constraints on name and email, plus regex requirements. Unhandled invalid payloads caused SQLite crashes or noisy error traces.
+Resolution:
+1. Implemented express-validator middleware rules in server/middleware/validate.js.
+2. Formatted validation error responses into a clean, RFC-compliant 422 JSON envelope.
+3. Added automated regression unit tests in server/tests/api.test.js (Test 2.5).
+Status: RESOLVED & VERIFIED.

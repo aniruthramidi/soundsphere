@@ -15,7 +15,9 @@ export const PlayerProvider = ({ children }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(sampleTracks[0]?.duration || 214);
 
-  // User state
+  // User & Backend State
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isBackendConnected, setIsBackendConnected] = useState(false);
   const [likedTrackIds, setLikedTrackIds] = useState(() => {
     return sampleTracks.filter((t) => t.liked).map((t) => t.id);
   });
@@ -28,16 +30,46 @@ export const PlayerProvider = ({ children }) => {
   // HTML5 Audio Reference
   const audioRef = useRef(null);
 
-  // Load playlists on mount
+  // Initialize backend connection, authentication, playlists and tracks on mount
   useEffect(() => {
-    musicService.getUserPlaylists().then((playlists) => {
-      setUserPlaylists(playlists);
-    }).catch(console.error);
+    const initApp = async () => {
+      // 1. Health check backend
+      const health = await musicService.checkHealth();
+      setIsBackendConnected(health.connected);
 
-    musicService.getTracks().then((tracks) => {
-      const liked = tracks.filter((t) => t.liked).map((t) => t.id);
-      setLikedTrackIds(liked);
-    }).catch(console.error);
+      // 2. Auto-authenticate as default demo user Alex if no token
+      if (health.connected) {
+        if (!musicService.getAuthToken()) {
+          try {
+            const authRes = await musicService.loginUser('alex@soundsphere.io', 'Password123!');
+            setCurrentUser(authRes.user);
+          } catch {
+            // Silently continue
+          }
+        } else {
+          const user = await musicService.getCurrentUser();
+          if (user) setCurrentUser(user);
+        }
+      }
+
+      // 3. Load playlists & tracks
+      try {
+        const playlists = await musicService.getUserPlaylists();
+        setUserPlaylists(playlists);
+      } catch (err) {
+        console.error('Playlists load error:', err);
+      }
+
+      try {
+        const tracks = await musicService.getTracks();
+        const liked = tracks.filter((t) => t.liked).map((t) => t.id);
+        setLikedTrackIds(liked);
+      } catch (err) {
+        console.error('Tracks load error:', err);
+      }
+    };
+
+    initApp();
   }, []);
 
   // Update HTML5 audio volume & mute
@@ -95,6 +127,9 @@ export const PlayerProvider = ({ children }) => {
     });
 
     setIsPlaying(true);
+
+    // Live backend playback recording (increments DB play count & logs history)
+    musicService.recordPlay(track.id);
 
     if (audioRef.current) {
       audioRef.current.src = track.audio;
@@ -242,6 +277,8 @@ export const PlayerProvider = ({ children }) => {
   return (
     <PlayerContext.Provider
       value={{
+        currentUser,
+        isBackendConnected,
         currentTrack,
         isPlaying,
         queue,

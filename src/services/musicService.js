@@ -1,7 +1,7 @@
 import { sampleTracks, samplePlaylists } from '../data/tracks.js';
 
-// Base REST API configuration (connects to Express backend on port 5000)
-const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 'http://localhost:5000/api/v1';
+// Base REST API configuration (connects to Express backend on port 5001)
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) || 'http://localhost:5001/api/v1';
 
 // Local storage key for persistent mock fallback state
 const STORAGE_KEY = 'soundsphere_tracks_v1';
@@ -21,6 +21,71 @@ export const saveAuthToken = (token) => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
   }
 };
+
+/**
+ * Check backend connection status and health
+ * @returns {Promise<{ connected: boolean, data?: object }>}
+ */
+export async function checkHealth() {
+  try {
+    const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2000) });
+    if (res.ok) {
+      const json = await res.json();
+      return { connected: true, data: json };
+    }
+  } catch {
+    // Backend offline
+  }
+  return { connected: false };
+}
+
+/**
+ * Authenticate user with backend
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<object>}
+ */
+export async function loginUser(email, password) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Login failed');
+  }
+  saveAuthToken(data.token);
+  return data;
+}
+
+/**
+ * Fetch authenticated profile
+ * @returns {Promise<object|null>}
+ */
+export async function getCurrentUser() {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: getAuthHeaders()
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.user || null;
+    }
+  } catch {
+    // Fallback
+  }
+  return null;
+}
+
+/**
+ * Log out user
+ */
+export function logoutUser() {
+  saveAuthToken('');
+}
 
 // Helper for authorized fetch headers
 const getAuthHeaders = () => {

@@ -3,12 +3,12 @@
  * RESTful Backend API Server Entry Point
  */
 
-require('dotenv').config();
+const path = require('node:path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const path = require('node:path');
 const swaggerUi = require('swagger-ui-express');
 
 const { initDatabase } = require('./config/database');
@@ -26,7 +26,7 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const swaggerDocument = require('./docs/swagger.json');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Initialize Database Connection & Tables
 initDatabase();

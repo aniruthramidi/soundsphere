@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Headphones, Home, Compass, LayoutDashboard, Menu, X } from 'lucide-react';
+import { Headphones, Home, Compass, LayoutDashboard, Menu, X, Activity } from 'lucide-react';
+import { usePlayer } from '../context/PlayerContext.jsx';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isBackendConnected, currentUser } = usePlayer();
 
   const toggleMobileMenu = () => {
     setMobileOpen((prev) => !prev);
@@ -63,13 +65,41 @@ export default function Navbar() {
 
         {/* User Profile & Mobile Actions */}
         <div className="navbar-actions">
+          {/* Live Backend Connection Indicator */}
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 10px',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              borderRadius: '20px',
+              background: isBackendConnected ? 'rgba(34, 197, 94, 0.12)' : 'rgba(255, 255, 255, 0.08)',
+              color: isBackendConnected ? '#4ade80' : '#a1a1aa',
+              border: `1px solid ${isBackendConnected ? 'rgba(34, 197, 94, 0.3)' : 'rgba(255, 255, 255, 0.15)'}`
+            }}
+            title={isBackendConnected ? 'Connected to Node.js/Express REST API on port 5001' : 'Running in Offline / Local storage mode'}
+          >
+            <span
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                background: isBackendConnected ? '#4ade80' : '#a1a1aa',
+                boxShadow: isBackendConnected ? '0 0 6px #4ade80' : 'none'
+              }}
+            />
+            {isBackendConnected ? 'API Live' : 'Offline'}
+          </span>
+
           <Link to="/dashboard" className="nav-profile-btn" aria-label="User Profile">
             <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+              src={currentUser?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
               alt="User profile avatar"
               className="user-avatar"
             />
-            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>Alex</span>
+            <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>{currentUser?.username || 'Alex'}</span>
           </Link>
 
           <button

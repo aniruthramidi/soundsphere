@@ -14,9 +14,13 @@ dist-ssr
 *.local
 
 # SQLite Database binaries
+data/
 server/data/*.db
 server/data/*.db-wal
 server/data/*.db-shm
+*.db
+*.db-wal
+*.db-shm
 
 # Editor directories and files
 .vscode/*

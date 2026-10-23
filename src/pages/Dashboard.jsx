@@ -29,18 +29,44 @@ export default function Dashboard({ onOpenPlaylistModal }) {
   const [allTracks, setAllTracks] = useState([]);
   const [favoriteTracks, setFavoriteTracks] = useState([]);
   const [recommendedTracks, setRecommendedTracks] = useState([]);
+  const [liveStats, setLiveStats] = useState({
+    songsPlayed: 1420,
+    hoursListened: 84.5,
+    favoriteGenre: 'Electronic',
+    playlistsCreated: 4
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    musicService.getTracks().then((tracks) => {
-      setAllTracks(tracks);
-      const favorites = tracks.filter((t) => likedTrackIds.includes(t.id));
-      setFavoriteTracks(favorites);
+    const loadDashboard = async () => {
+      try {
+        const [tracks, analytics] = await Promise.all([
+          musicService.getTracks(),
+          musicService.getDashboardAnalytics()
+        ]);
 
-      const recs = tracks.slice(2, 6);
-      setRecommendedTracks(recs);
-      setLoading(false);
-    }).catch(console.error);
+        setAllTracks(tracks);
+        const favorites = tracks.filter((t) => likedTrackIds.includes(t.id));
+        setFavoriteTracks(favorites);
+
+        if (analytics && analytics.stats) {
+          setLiveStats(analytics.stats);
+          if (analytics.recommendations && analytics.recommendations.length > 0) {
+            setRecommendedTracks(analytics.recommendations);
+          } else {
+            setRecommendedTracks(tracks.slice(2, 6));
+          }
+        } else {
+          setRecommendedTracks(tracks.slice(2, 6));
+        }
+      } catch (err) {
+        console.error('Dashboard load error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
   }, [likedTrackIds]);
 
   const handleShuffleFavorites = () => {
@@ -132,7 +158,7 @@ export default function Dashboard({ onOpenPlaylistModal }) {
                 <Music size={24} color="#ffffff" />
               </div>
               <div>
-                <div className="stat-value">1,420</div>
+                <div className="stat-value">{Number(liveStats.songsPlayed).toLocaleString()}</div>
                 <div className="stat-label">Songs Played</div>
               </div>
             </div>
@@ -142,7 +168,7 @@ export default function Dashboard({ onOpenPlaylistModal }) {
                 <Clock size={24} color="#ffffff" />
               </div>
               <div>
-                <div className="stat-value">84.5 hrs</div>
+                <div className="stat-value">{liveStats.hoursListened} hrs</div>
                 <div className="stat-label">Hours Listened</div>
               </div>
             </div>
@@ -152,7 +178,7 @@ export default function Dashboard({ onOpenPlaylistModal }) {
                 <Sparkles size={24} color="#ffffff" />
               </div>
               <div>
-                <div className="stat-value">Electronic</div>
+                <div className="stat-value">{liveStats.favoriteGenre}</div>
                 <div className="stat-label">Favorite Genre</div>
               </div>
             </div>
@@ -162,7 +188,7 @@ export default function Dashboard({ onOpenPlaylistModal }) {
                 <ListMusic size={24} color="#ffffff" />
               </div>
               <div>
-                <div className="stat-value">{userPlaylists.length || 4}</div>
+                <div className="stat-value">{userPlaylists.length || liveStats.playlistsCreated || 4}</div>
                 <div className="stat-label">Playlists</div>
               </div>
             </div>

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  soundsphere-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: soundsphere-production
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=5001
+      - JWT_SECRET=production_secure_jwt_secret_key_soundsphere_2026
+      - JWT_EXPIRES_IN=7d
+      - DB_PATH=/app/server/data/soundsphere.db
+      - CORS_ORIGIN=*
+    volumes:
+      - soundsphere_data:/app/server/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  soundsphere_data:
+    name: soundsphere_production_db_volume

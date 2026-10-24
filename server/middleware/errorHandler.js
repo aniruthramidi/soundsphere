@@ -42,6 +42,7 @@ const errorHandler = (err, req, res, next) => {
     status,
     statusCode,
     message,
+    timestamp: new Date().toISOString(),
     ...(err.details && { details: err.details })
   };
 
